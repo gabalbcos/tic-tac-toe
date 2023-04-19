@@ -1,4 +1,5 @@
-
+function Gameboard(){
+  
   let board = [['','',''],['','',''],['','','']];
   let round = 0;
 
@@ -51,16 +52,18 @@
     }
 
   const finalMessage = () => {
-      if (checkWin('X')) {
-      console.log('Player X wins!');
+      if (checkWin(playerSignal())) {
+      console.log(`Player ${playerSignal()} wins!`);
     } else {
-      console.log('No winner yet.');
+      console.log('No winner.');
     }
   }
-  
+
   // function to log the board
   const getBoard = () => {
     console.log(board);
   }
 
- 
+  return{addSignal, checkWinner, finalMessage, getBoard}
+} 
+
