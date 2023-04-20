@@ -1,10 +1,37 @@
-function Gameboard(){
+function Gameboard () {
   
   let board = [['','',''],['','',''],['','','']];
+ 
+  // function to add the symbol 
+  const addSignal = (row, column) => {
+    if (board[row][column] === ''){
+      board[row][column] = playerSignal();
+      round += 1;
+    } else { 
+      return };
+  }
+
+  // function to log the board
+  const getBoard = () => board;
+  
+  // print
+  const printBoard = () => {
+    console.log(board);
+  }
+
+  return {addSignal, getBoard, printBoard};
+};
+
+// control the STATE of the game
+
+function GameController() {
+  player1Score = 0;
+  player2Score = 0;
   let round = 0;
+  const board = Gameboard();
 
   // Winning combinations
- const winningCombinations = [
+  const winningCombinations = [
   // Rows
   [[0, 0], [0, 1], [0, 2]],
   [[1, 0], [1, 1], [1, 2]],
@@ -18,52 +45,50 @@ function Gameboard(){
   [[0, 2], [1, 1], [2, 0]]
   ];
 
-  // function to add the symbol
-  const addSignal = (row, column) => {
-    if (board[row][column] === ''){
-      board[row][column] = playerSignal();
-      round += 1;
-    } else { 
-      return };
-  }
+ // function to dictate the player turn
+ const playerTurn = () => {
+  return (round % 2 === 0) ;
+}
 
-  // function to dictate the player turn
-  const playerTurn = () => {
-      return (round % 2 === 0) ;
+// function to change the player turn
+const playerSignal = () => {
+  if(playerTurn()) {
+    return 'X';
+  } else {
+    return 'O';
   }
+}
 
-  // function to change the player turn
-  const playerSignal = () => {
-    if(playerTurn()) {
-      return 'X';
-    } else {
-      return 'O';
+const checkWinner = (player) => {
+  for (let combination of winningCombinations) {
+    const [a, b, c] = combination;
+    if (board[a[0]][a[1]] === player && board[b[0]][b[1]] === player && board[c[0]][c[1]] === player) {
+      return true;
     }
   }
+  return false;
+}
 
-  const checkWinner = (player) => {
-      for (let combination of winningCombinations) {
-        const [a, b, c] = combination;
-        if (board[a[0]][a[1]] === player && board[b[0]][b[1]] === player && board[c[0]][c[1]] === player) {
-          return true;
-        }
-      }
-      return false;
-    }
+const checkDraw = () => {
+for (let row of board) {
+  if (row.includes('')) {
+    return false;
+  }
+}
+return true;
+}
 
-  const finalMessage = () => {
-      if (checkWin(playerSignal())) {
-      console.log(`Player ${playerSignal()} wins!`);
-    } else {
-      console.log('No winner.');
+const finalMessage = () => {
+  if (checkWinner(playerSignal())) {
+  console.log(`Player ${playerSignal()} wins!`);
+} else if (checkDraw) {
+  console.log('No winner.');
+} else {
+  return;
+
+const printNewRound = () => {
+  board.printBoard();
+}
     }
   }
-
-  // function to log the board
-  const getBoard = () => {
-    console.log(board);
-  }
-
-  return{addSignal, checkWinner, finalMessage, getBoard}
-} 
-
+}
