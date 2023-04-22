@@ -100,3 +100,14 @@ main {
 
 }
 
+/* game design */
+.square {
+    border: 2px solid black;
+    display:flex;
+    flex-wrap;
+    float: left;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    height: 33%;
+}

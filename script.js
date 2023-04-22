@@ -1,110 +1,55 @@
+// Attempt 2 
 const Gameboard = (() => {
+  let gameboard =['','',,'','','','','','','',];
 
-  //public members
-
-  let board = [['','',''],['','',''],['','','']];
-  let round = 0;
-
-  // function to add the symbol 
-  const addSignal = (row, column) => {
-    if (board[row][column] === ''){
-      board[row][column] = playerSignal();
-      round += 1;
-    } else { 
-      return };
+  const render = () => {
+    let boardHTML = '';
+    gameboard.forEach((square, index ) => {
+      boardHTML += `<div class="square" id="square-${index}">${square}</div>`;
+    })
+    document.querySelector('#board-grid').innerHTML = boardHTML;
+    const squares = document.querySelectorAll('.square');
+    squares.forEach((square) => {
+      square.addEventListener('click', Game.handleClick);
+    });
   }
 
-  // function to log the board
-  const getBoard = () => board;
-  
-  // print
-  const printBoard = () => {
-    console.log(board);
+  return {render,
+         }
+})();
+
+// players factory function
+const createPlayers = (name, mark) => {
+  return {
+    name,
+    mark
+  }
+}
+
+const Game = (() => {
+  let players = [];
+  let currentPlayerIndex;
+  let gameOver;
+
+  const start = () => {
+    players = [
+      createPlayers(document.querySelector('#player1').value, 'X'),
+      createPlayers(document.querySelector('#player2').value, 'O')
+    ];
+    currentPlayerIndex = 0;
+    gameOver = false;
+    Gameboard.render();
   }
 
-  const addRound = () => {
-    round += 1;
+  const handleClick = (event) => {
+    console.log(event.target.id);
   }
 
-  return {addSignal, addRound, getBoard, printBoard, round};
+  return{start, handleClick};
+})();
+
+
+const buttonPlay = document.querySelector('#btn-reset') ;
+buttonPlay.addEventListener('click', () => {
+  Game.start() ;
 });
-
-// control the STATE of the game
-
-function GameController() {
-  let player1Score = 0;
-  let player2Score = 0;
-  const board = Gameboard.board;
-
-  // Winning combinations
-  const winningCombinations = [
-  // Rows
-  [[0, 0], [0, 1], [0, 2]],
-  [[1, 0], [1, 1], [1, 2]],
-  [[2, 0], [2, 1], [2, 2]],
-  // Columns
-  [[0, 0], [1, 0], [2, 0]],
-  [[0, 1], [1, 1], [2, 1]],
-  [[0, 2], [1, 2], [2, 2]],
-  // Diagonals
-  [[0, 0], [1, 1], [2, 2]],
-  [[0, 2], [1, 1], [2, 0]]
-  ];
-
- // function to dictate the player turn
- const playerTurn = () => {
-  return (Gameboard.round % 2 === 0) ;
-}
-
-// function to change the player turn
-const playerSignal = () => {
-  if(playerTurn()) {
-    return 'X';
-  } else {
-    return 'O';
-  }
-}
-
-const checkWinner = (player) => {
-  for (let combination of winningCombinations) {
-    const [a, b, c] = combination;
-    if (Gameboard.board[a[0]][a[1]] === player && Gameboard.board[b[0]][b[1]] === player && Gameboard.board[c[0]][c[1]] === player) {
-      return true;
-    }
-  }
-  return false;
-}
-
-const checkDraw = () => {
-for (let row of Gameboard.board) {
-  if (row.includes('')) {
-    return false;
-  }
-}
-return true;
-}
-
-const finalMessage = () => {
-  if (checkWinner(playerSignal())) {
-  console.log(`Player ${playerSignal()} wins!`);
-} else if (checkDraw()) {
-  console.log('No winner.');
-} else {
-  return;
-  }
-}
-
-const printNewRound = () => {
-  board.getBoard();
-    }
-
-  const playRound = (row, column) => {
-    
-    board.addSignal(row, column);
-    finalMessage();
-    printNewRound();
-    board.printBoard();
-  }
-
-  return {playRound}
-}
