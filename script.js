@@ -1,7 +1,10 @@
-function Gameboard () {
-  
+const Gameboard = (() => {
+
+  //public members
+
   let board = [['','',''],['','',''],['','','']];
- 
+  let round = 0;
+
   // function to add the symbol 
   const addSignal = (row, column) => {
     if (board[row][column] === ''){
@@ -19,16 +22,19 @@ function Gameboard () {
     console.log(board);
   }
 
-  return {addSignal, getBoard, printBoard};
-};
+  const addRound = () => {
+    round += 1;
+  }
+
+  return {addSignal, addRound, getBoard, printBoard, round};
+});
 
 // control the STATE of the game
 
 function GameController() {
-  player1Score = 0;
-  player2Score = 0;
-  let round = 0;
-  const board = Gameboard();
+  let player1Score = 0;
+  let player2Score = 0;
+  const board = Gameboard.board;
 
   // Winning combinations
   const winningCombinations = [
@@ -47,7 +53,7 @@ function GameController() {
 
  // function to dictate the player turn
  const playerTurn = () => {
-  return (round % 2 === 0) ;
+  return (Gameboard.round % 2 === 0) ;
 }
 
 // function to change the player turn
@@ -62,7 +68,7 @@ const playerSignal = () => {
 const checkWinner = (player) => {
   for (let combination of winningCombinations) {
     const [a, b, c] = combination;
-    if (board[a[0]][a[1]] === player && board[b[0]][b[1]] === player && board[c[0]][c[1]] === player) {
+    if (Gameboard.board[a[0]][a[1]] === player && Gameboard.board[b[0]][b[1]] === player && Gameboard.board[c[0]][c[1]] === player) {
       return true;
     }
   }
@@ -70,7 +76,7 @@ const checkWinner = (player) => {
 }
 
 const checkDraw = () => {
-for (let row of board) {
+for (let row of Gameboard.board) {
   if (row.includes('')) {
     return false;
   }
@@ -81,14 +87,24 @@ return true;
 const finalMessage = () => {
   if (checkWinner(playerSignal())) {
   console.log(`Player ${playerSignal()} wins!`);
-} else if (checkDraw) {
+} else if (checkDraw()) {
   console.log('No winner.');
 } else {
   return;
+  }
+}
 
 const printNewRound = () => {
-  board.printBoard();
-}
+  board.getBoard();
     }
+
+  const playRound = (row, column) => {
+    
+    board.addSignal(row, column);
+    finalMessage();
+    printNewRound();
+    board.printBoard();
   }
+
+  return {playRound}
 }
